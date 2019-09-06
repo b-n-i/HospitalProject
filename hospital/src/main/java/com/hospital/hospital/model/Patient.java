@@ -1,5 +1,6 @@
 package com.hospital.hospital.model;
 
+import javax.persistence.*;
 import javax.validation.Valid;
 
 //firstName - String
@@ -8,16 +9,29 @@ import javax.validation.Valid;
 //Address – Object
 //Email – Object – make sure the email is valid
 //PhoneNumber – Object – the phone number should be validated (criterias : only digits, length of 10, starts with 07)
+@Entity
+@Table(name="patients")
 public class Patient {
-
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    @Column(name="doctor_id")
     private Integer id;
+    @Column(name="first_name")
     private String firstName;
+    @Column(name="last_name")
     private String lastName;
+    @Column(name="age")
     private Integer age;
+    @OneToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "address_id")
     private Address address;
     @Valid
+    @OneToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "email_id")
     private Email email;
     @Valid
+    @OneToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "phone_number_id")
     private PhoneNumber phoneNumber;
 
     public Patient(){

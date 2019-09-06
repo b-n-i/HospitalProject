@@ -2,8 +2,6 @@ package com.hospital.hospital.service;
 
 import com.hospital.hospital.model.Doctor;
 import com.hospital.hospital.repository.DoctorRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -25,22 +23,23 @@ public class DoctorService implements IDoctorService {
     }
 
     @Override
-    public Doctor getDoctorById(Integer doctorId) {
-        return null;
+    public Doctor getDoctorById(Integer doctorId)
+    {
+        return doctorRepository.findById(doctorId).orElse(null);
     }
 
     @Override
-    public boolean addDoctor(Doctor doctor) {
-        return false;
+    public void addDoctor(Doctor doctor) {
+        doctorRepository.save(doctor);
     }
 
     @Override
     public void updateDoctor(Doctor doctor) {
-
+        doctorRepository.save(doctor);
     }
 
     @Override
     public void deleteDoctor(Integer doctorId) {
-
+        doctorRepository.deleteById(doctorId);
     }
 }

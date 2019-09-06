@@ -16,13 +16,16 @@ public class Doctor {
     private String lastName;
     @Column(name="function")
     private String function;
-    @Column(name="address")
+    @OneToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "address_id")
     private Address address;
     @Valid
-    @Column(name="email")
+    @OneToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "email_id")
     private Email email;
     @Valid
-    @Column(name="phone_number")
+    @OneToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "phone_number_id")
     private PhoneNumber phoneNumber;
 
     public Doctor(){}
@@ -69,7 +72,7 @@ public class Doctor {
     }
 
     public void setAddress(Address address) {
-        this.address = address;
+        this.address= address;
     }
 
     public Email getEmail() {
