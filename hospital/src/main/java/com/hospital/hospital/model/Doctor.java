@@ -4,17 +4,17 @@ import javax.persistence.*;
 import javax.validation.Valid;
 
 @Entity
-@Table(name="doctors")
+@Table(name = "doctors")
 public class Doctor {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    @Column(name="doctor_id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "doctor_id")
     private Integer id;
-    @Column(name="first_name")
+    @Column(name = "first_name")
     private String firstName;
-    @Column(name="last_name")
+    @Column(name = "last_name")
     private String lastName;
-    @Column(name="function")
+    @Column(name = "function")
     private String function;
     @OneToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "address_id")
@@ -28,7 +28,8 @@ public class Doctor {
     @JoinColumn(name = "phone_number_id")
     private PhoneNumber phoneNumber;
 
-    public Doctor(){}
+    public Doctor() {
+    }
 
     public Doctor(String firstName, String lastName) {
         this.firstName = firstName;
@@ -72,7 +73,7 @@ public class Doctor {
     }
 
     public void setAddress(Address address) {
-        this.address= address;
+        this.address = address;
     }
 
     public Email getEmail() {
@@ -89,5 +90,18 @@ public class Doctor {
 
     public void setPhoneNumber(PhoneNumber phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    @Override
+    public String toString() {
+        return "Doctor{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", function='" + function + '\'' +
+                ", address=" + address +
+                ", email=" + email +
+                ", phoneNumber=" + phoneNumber +
+                '}';
     }
 }

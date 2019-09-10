@@ -30,8 +30,7 @@ public class DoctorService implements IDoctorService {
     }
 
     @Override
-    public Doctor getDoctorById(Integer doctorId)
-    {
+    public Doctor getDoctorById(Integer doctorId) {
         return doctorRepository.findById(doctorId).orElse(null);
     }
 
@@ -40,7 +39,7 @@ public class DoctorService implements IDoctorService {
         doctorRepository.save(doctor);
     }
 
-//    TODO: refactorizare, eventual folosind DTOs
+    //    TODO: refactorizare, eventual folosind DTOs
     @Override
     public void updateDoctor(String rawJson) throws IOException {
 //        https://www.baeldung.com/http-put-patch-difference-spring

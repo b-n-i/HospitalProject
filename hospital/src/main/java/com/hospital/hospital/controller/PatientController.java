@@ -1,5 +1,6 @@
 package com.hospital.hospital.controller;
 
+import com.hospital.hospital.dtos.PatientDTO;
 import com.hospital.hospital.model.Patient;
 import com.hospital.hospital.service.IPatientService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 @RestController
@@ -31,13 +33,18 @@ public class PatientController {
         return patientService.getPatientById(id);
     }
 
-    @PostMapping("patient/update")
-    void updatePatient(@Valid @RequestBody Patient Patient, BindingResult result) {
-        patientService.updatePatient(Patient);
+    @PatchMapping("patient/update")
+    void updatePatient(@Valid @RequestBody PatientDTO patientDTO, BindingResult result) {
+        Patient oldPatient = patientService.getPatientById(patientDTO.getId());
+        try {
+            patientService.updatePatient(patientDTO);
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     @DeleteMapping(value = "/patient/delete/{id}")
-    public void deleteDelete(@PathVariable Integer id) {
+    public void deletePatient(@PathVariable Integer id) {
         patientService.deletePatient(id);
     }
 

@@ -3,22 +3,22 @@ package com.hospital.hospital.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name="addresses")
+@Table(name = "addresses")
 public class Address {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    @Column(name="address_id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "address_id")
     private Integer id;
-    @Column(name="country")
+    @Column(name = "country")
     private String country;
-    @Column(name="city")
+    @Column(name = "city")
     private String city;
-    @Column(name="street")
+    @Column(name = "street")
     private String street;
-    @Column(name="street_number")
+    @Column(name = "street_number")
     private String streetNumber;
 
-    public Address(){
+    public Address() {
     }
 
     public Address(Integer id) {
@@ -63,5 +63,16 @@ public class Address {
 
     public void setStreetNumber(String streetNumber) {
         this.streetNumber = streetNumber;
+    }
+
+    @Override
+    public String toString() {
+        return "Address{" +
+                "id=" + id +
+                ", country='" + country + '\'' +
+                ", city='" + city + '\'' +
+                ", street='" + street + '\'' +
+                ", streetNumber='" + streetNumber + '\'' +
+                '}';
     }
 }

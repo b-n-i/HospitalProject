@@ -10,17 +10,17 @@ import javax.validation.Valid;
 //Email – Object – make sure the email is valid
 //PhoneNumber – Object – the phone number should be validated (criterias : only digits, length of 10, starts with 07)
 @Entity
-@Table(name="patients")
+@Table(name = "patients")
 public class Patient {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    @Column(name="doctor_id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "doctor_id")
     private Integer id;
-    @Column(name="first_name")
+    @Column(name = "first_name")
     private String firstName;
-    @Column(name="last_name")
+    @Column(name = "last_name")
     private String lastName;
-    @Column(name="age")
+    @Column(name = "age")
     private Integer age;
     @OneToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "address_id")
@@ -34,7 +34,7 @@ public class Patient {
     @JoinColumn(name = "phone_number_id")
     private PhoneNumber phoneNumber;
 
-    public Patient(){
+    public Patient() {
 
     }
 
@@ -97,5 +97,18 @@ public class Patient {
 
     public void setPhoneNumber(PhoneNumber phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    @Override
+    public String toString() {
+        return "Patient{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", age=" + age +
+                ", address=" + address +
+                ", email=" + email +
+                ", phoneNumber=" + phoneNumber +
+                '}';
     }
 }

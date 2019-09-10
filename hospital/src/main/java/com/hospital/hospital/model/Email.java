@@ -6,22 +6,22 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name="emails")
+@Table(name = "emails")
 public class Email {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    @Column(name="email_id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "email_id")
     private Integer emailId;
     @NotNull
     @EmailConstraint
-    @Column(name="email")
+    @Column(name = "email")
     private String email;
 
-    public  Email(){
+    public Email() {
 
     }
 
-    public Email( @NotNull String email) {
+    public Email(@NotNull String email) {
         this.email = email;
     }
 
@@ -39,5 +39,13 @@ public class Email {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Override
+    public String toString() {
+        return "Email{" +
+                "emailId=" + emailId +
+                ", email='" + email + '\'' +
+                '}';
     }
 }

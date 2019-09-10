@@ -45,18 +45,8 @@ public class DoctorController {
     }
 
     @DeleteMapping(value = "/doctor/delete/{id}")
-    public void deleteDelete(@PathVariable Integer id) {
+    public void deleteDoctor(@PathVariable Integer id) {
         doctorService.deleteDoctor(id);
     }
-
-    @RequestMapping(value = "/heavyresource/{id}", method = RequestMethod.PATCH, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> partialUpdateGeneric(
-            @RequestBody Map<String, Object> updates,
-            @PathVariable("id") String id) {
-
-
-        return ResponseEntity.ok("resource updated");
-    }
-
 
 }
