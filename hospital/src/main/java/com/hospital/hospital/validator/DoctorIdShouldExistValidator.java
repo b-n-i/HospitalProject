@@ -17,7 +17,6 @@ import javax.validation.ConstraintValidatorContext;
 
 //https://www.logicbig.com/tutorials/spring-framework/spring-core/creating-custom-validation-constraints.html
 
-@Configurable(autowire = Autowire.BY_TYPE, dependencyCheck = true)
 public class DoctorIdShouldExistValidator implements
         ConstraintValidator<DoctorIdShouldExistConstraint, Integer> {
 

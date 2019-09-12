@@ -2,11 +2,7 @@ package com.hospital.hospital.controller;
 
 import com.hospital.hospital.model.Appointment;
 import com.hospital.hospital.service.AppointmentService;
-import com.hospital.hospital.service.DoctorService;
-import com.hospital.hospital.validator.DoctorIdShouldExistValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.Validator;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -67,6 +63,11 @@ public class AppointmentController {
     @DeleteMapping(value = "/appointment/delete/{id}")
     public void deleteAppointment(@PathVariable Integer id) {
         appointmentService.deleteAppointment(id);
+    }
+
+    @GetMapping(value = "appointment/doctor/{id}")
+    public List<Appointment> getAppointmentsByDoctorId(@PathVariable Integer id) {
+        return appointmentService.getAppointmentsByDoctorId(id);
     }
 
 }

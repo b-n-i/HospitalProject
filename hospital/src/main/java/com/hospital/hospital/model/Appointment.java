@@ -1,5 +1,6 @@
 package com.hospital.hospital.model;
 
+import com.hospital.hospital.validator.AppointmentConstraint;
 import com.hospital.hospital.validator.DoctorIdShouldExistConstraint;
 import com.hospital.hospital.validator.PatientIdShouldExistConstraint;
 
@@ -9,6 +10,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "appointments")
+@AppointmentConstraint
 public class Appointment {
 
     @Id
@@ -27,9 +29,11 @@ public class Appointment {
     private
     Integer patientId;
     @Column(name = "start_time")
+    @Temporal(TemporalType.TIMESTAMP)
     private
     Date startTime;
     @Column(name = "end_time")
+    @Temporal(TemporalType.TIMESTAMP)
     private
     Date endTime;
     @Column(name = "cause")
