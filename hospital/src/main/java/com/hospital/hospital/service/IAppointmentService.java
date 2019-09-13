@@ -11,5 +11,7 @@ public interface IAppointmentService {
 
     void addAppointment(Appointment appointment);
 
+    void updateAppointment(Appointment appointment);
+
     void deleteAppointment(Integer appointmentId);
 }

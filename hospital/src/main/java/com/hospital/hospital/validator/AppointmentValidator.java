@@ -1,6 +1,7 @@
 package com.hospital.hospital.validator;
 
 import com.hospital.hospital.model.Appointment;
+import com.hospital.hospital.repository.AppointmentRepository;
 import com.hospital.hospital.repository.PatientRepository;
 import com.hospital.hospital.service.AppointmentService;
 import com.hospital.hospital.service.BeanUtil;
@@ -17,18 +18,19 @@ public class AppointmentValidator implements
         ConstraintValidator<AppointmentConstraint, Appointment> {
 
     @Autowired
-    AppointmentService appointmentService;
+    AppointmentRepository appointmentRepository;
 
     @Override
     public void initialize(AppointmentConstraint appointment) {
-        appointmentService = BeanUtil.getBean(AppointmentService.class);
+        appointmentRepository = BeanUtil.getBean(AppointmentRepository.class);
     }
 
     @Override
     public boolean isValid(Appointment appointment,
                            ConstraintValidatorContext cxt) {
         System.out.println("A ajuns in appointment validator!");
-        boolean intervalIsOk = (appointmentService.getAppointmentsFromInterval(appointment.getStartTime(), appointment.getEndTime()).size())==0;
+        boolean intervalIsOk = appointmentRepository.getAppointmentsFromInterval(appointment.getStartTime(), appointment.getEndTime()).isEmpty();
+        System.out.println(intervalIsOk);
         return appointment.getStartTime().before(appointment.getEndTime()) &&
                 appointment.getEndTime().after(appointment.getStartTime())&&intervalIsOk;
     }

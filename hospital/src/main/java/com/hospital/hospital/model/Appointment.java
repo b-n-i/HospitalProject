@@ -39,6 +39,13 @@ public class Appointment {
     @Column(name = "cause")
     private
     String cause;
+    @Column(name = "cancelled")
+    private
+    Boolean cancelled = false;
+    @Column(name = "took_place")
+    private
+    Boolean tookPlace = false;
+
 
     public Appointment() {
     }
@@ -89,5 +96,21 @@ public class Appointment {
 
     public void setCause(String cause) {
         this.cause = cause;
+    }
+
+    public Boolean getCancelled() {
+        return cancelled;
+    }
+
+    public void setCancelled(Boolean cancelled) {
+        this.cancelled = cancelled;
+    }
+
+    public Boolean getTookPlace() {
+        return tookPlace;
+    }
+
+    public void setTookPlace(Boolean tookPlace) {
+        this.tookPlace = tookPlace;
     }
 }

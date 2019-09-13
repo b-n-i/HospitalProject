@@ -3,6 +3,7 @@ package com.hospital.hospital.controller;
 import com.hospital.hospital.model.Appointment;
 import com.hospital.hospital.service.AppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.system.ApplicationPid;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -10,6 +11,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 public class AppointmentController {
@@ -70,4 +72,31 @@ public class AppointmentController {
         return appointmentService.getAppointmentsByDoctorId(id);
     }
 
+
+    @GetMapping(value = "appointment/patient/{id}")
+    public List<Appointment> getAppointmentsByPatientId(@PathVariable Integer id) {
+        return appointmentService.getAppointmentsByPatientId(id);
+    }
+
+    @GetMapping(value = "appointment/active/doctor/{id}")
+    public List<Appointment> getAppointmentByDoctorIdFindByStartDateBeforeCurrentDate(@PathVariable Integer id){
+        Date currentDate = new Date(System.currentTimeMillis());
+        return appointmentService.getAppointmentsDoctorIdBeforeDate(id, currentDate);
+    }
+
+    @GetMapping(value = "appointment/future")
+    public List<Appointment> getAppointmentInTheFuture(){
+        Date currentDate = new Date(System.currentTimeMillis());
+        return appointmentService.getAppointmentAfterDate(currentDate);
+    }
+
+    @PatchMapping(value="appointments/cancel/{id}")
+    public void cancelAppointment(@PathVariable Integer id){
+        Appointment appointmentToBeCancelled = appointmentService.getAppointmentById(id);
+        System.out.println(appointmentToBeCancelled.getStartTime());
+        if( appointmentService.canBeCancelled(appointmentToBeCancelled)){
+            appointmentToBeCancelled.setCancelled(true);
+            appointmentService.updateAppointment(appointmentToBeCancelled);
+        }
+    }
 }
