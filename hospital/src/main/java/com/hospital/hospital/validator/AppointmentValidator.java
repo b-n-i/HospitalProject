@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import javax.annotation.Resource;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.util.List;
 
 //@Configurable(autowire = Autowire.BY_TYPE, dependencyCheck = true)
 public class AppointmentValidator implements
@@ -29,7 +30,11 @@ public class AppointmentValidator implements
     public boolean isValid(Appointment appointment,
                            ConstraintValidatorContext cxt) {
         System.out.println("A ajuns in appointment validator!");
-        boolean intervalIsOk = appointmentRepository.getAppointmentsFromInterval(appointment.getStartTime(), appointment.getEndTime()).isEmpty();
+        List<Appointment> appointmentsFromInterval = appointmentRepository.getAppointmentsFromInterval(appointment.getStartTime(), appointment.getEndTime());
+        boolean intervalIsOk = appointmentsFromInterval.isEmpty();
+        if(appointmentsFromInterval.size()==1 && appointmentsFromInterval.get(0).getAppointmentId().equals(appointment.getAppointmentId())){
+            intervalIsOk = true;
+        }
         System.out.println(intervalIsOk);
         return appointment.getStartTime().before(appointment.getEndTime()) &&
                 appointment.getEndTime().after(appointment.getStartTime())&&intervalIsOk;

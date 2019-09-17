@@ -2,8 +2,8 @@ package com.hospital.hospital.controller;
 
 import com.hospital.hospital.model.Appointment;
 import com.hospital.hospital.service.AppointmentService;
+import com.hospital.hospital.service.EmailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.system.ApplicationPid;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -11,13 +11,15 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 @RestController
 public class AppointmentController {
 
     @Autowired
     AppointmentService appointmentService;
+
+    @Autowired
+    EmailServiceImpl emailService;
 
 
     @GetMapping("/appointmentSample")
@@ -91,12 +93,18 @@ public class AppointmentController {
     }
 
     @PatchMapping(value="appointments/cancel/{id}")
-    public void cancelAppointment(@PathVariable Integer id){
+    public Boolean cancelAppointment(@PathVariable Integer id){
         Appointment appointmentToBeCancelled = appointmentService.getAppointmentById(id);
-        System.out.println(appointmentToBeCancelled.getStartTime());
-        if( appointmentService.canBeCancelled(appointmentToBeCancelled)){
+        Boolean response = appointmentService.canBeCancelled(appointmentToBeCancelled);
+        if( response){
             appointmentToBeCancelled.setCancelled(true);
             appointmentService.updateAppointment(appointmentToBeCancelled);
         }
+        return response;
+    }
+
+    @PostMapping(value="test")
+    public void test(){
+        emailService.sendMessage();
     }
 }

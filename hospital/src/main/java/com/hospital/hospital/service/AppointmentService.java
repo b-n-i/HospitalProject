@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 public class AppointmentService implements IAppointmentService {
 
     static final Integer TIME_LIMIT_BEFORE_CANCEL = 60;
+    static final Integer DATABASE_MINUTES_AHEAD = 180;
 
     @Resource
     AppointmentRepository appointmentRepository;
@@ -48,20 +49,6 @@ public class AppointmentService implements IAppointmentService {
     }
 
 
-//    public List<Appointment> getAppointmentsFromInterval(Date startDate, Date endDate) {
-////        da eroare deoarece utilizez aici repository
-//        List<Appointment> appointments = getAllAppointments();
-//        List<Appointment> appointmentsFromInterval = new ArrayList<>();
-//        for(Appointment appointment: appointments)
-//        {
-//            if ((appointment.getEndTime().after(startDate) && appointment.getEndTime().before(endDate))
-//                    || (appointment.getStartTime().after(startDate) && appointment.getStartTime().before(endDate))) {
-//                appointmentsFromInterval.add(appointment);
-//            }
-//        }
-//        return appointmentsFromInterval;
-//    }
-
     public List<Appointment> getAppointmentsByDoctorId( Integer doctorId){
         return appointmentRepository.getAppointmentByDoctorId(doctorId);
     }
@@ -83,12 +70,17 @@ public class AppointmentService implements IAppointmentService {
         Date currentDate = new Date(System.currentTimeMillis());
         if(!appointmentToBeCancelled.getTookPlace() && appointmentStartTime.after(currentDate)){
             long milliSeconds = appointmentStartTime.getTime() - currentDate.getTime();
-            long diffMinutes = TimeUnit.MINUTES.convert(milliSeconds, TimeUnit.MILLISECONDS);
+            long diffMinutes = TimeUnit.MINUTES.convert(milliSeconds, TimeUnit.MILLISECONDS)-DATABASE_MINUTES_AHEAD;
             System.out.println(appointmentStartTime);
             System.out.println(currentDate);
             System.out.println(diffMinutes);
             return diffMinutes > TIME_LIMIT_BEFORE_CANCEL;
         }
         return false;
+    }
+
+    public void markAppointmentsThatTookPlace(){
+        Date currentDate = new Date(System.currentTimeMillis());
+        appointmentRepository.markAppointmentsThatTookPlace(true, currentDate);
     }
 }
