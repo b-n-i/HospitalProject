@@ -1,0 +1,10 @@
+Hello ${firstName}!
+A doctor account containing the following information has been created for you:
+First name: ${firstName}
+Last name: ${lastName}
+Function: ${function}
+Address: ${address}
+Email: ${email}
+Phone number: ${phoneNumber}
+
+Have a nice day!

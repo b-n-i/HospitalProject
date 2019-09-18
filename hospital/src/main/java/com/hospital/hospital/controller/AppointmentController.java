@@ -1,6 +1,9 @@
 package com.hospital.hospital.controller;
 
 import com.hospital.hospital.model.Appointment;
+import com.hospital.hospital.model.Doctor;
+import com.hospital.hospital.model.Email;
+import com.hospital.hospital.model.Patient;
 import com.hospital.hospital.service.AppointmentService;
 import com.hospital.hospital.service.EmailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,7 +107,21 @@ public class AppointmentController {
     }
 
     @PostMapping(value="test")
-    public void test(){
-        emailService.sendMessage();
+    public void test()
+    {
+        Doctor doctor = new Doctor();
+        Email email = new Email();
+        email.setEmail("bacaoanuioana@yahoo.com");
+
+        doctor.setEmail(email);
+        doctor.setFirstName("Radu");
+        emailService.sendMessageToDoctor(doctor);
+
+        Email patientEmail = new Email();
+        patientEmail.setEmail("b_nicoleta_ioana@yahoo.com");
+        Patient patient = new Patient();
+        patient.setFirstName("patient");
+        patient.setEmail(patientEmail);
+        emailService.sendMessageToPatient(patient);
     }
 }
