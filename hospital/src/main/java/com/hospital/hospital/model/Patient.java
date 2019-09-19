@@ -111,4 +111,8 @@ public class Patient {
                 ", phoneNumber=" + phoneNumber +
                 '}';
     }
+
+    public String name(){
+        return (this.firstName!=null?this.firstName:"") +" "+ (this.lastName!=null?this.lastName:"");
+    }
 }

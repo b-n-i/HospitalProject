@@ -4,6 +4,7 @@ package com.hospital.hospital.service;
 import com.hospital.hospital.model.Appointment;
 import com.hospital.hospital.model.Doctor;
 import com.hospital.hospital.model.Patient;
+import com.hospital.hospital.utils.DateTimeUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
@@ -14,6 +15,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
 import java.io.StringWriter;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.Properties;
 
 //https://www.baeldung.com/spring-email
@@ -29,8 +32,16 @@ public class EmailServiceImpl implements EmailService {
     @Autowired
     VelocityEngine velocityEngine;
 
+
+    public EmailServiceImpl() {
+        Properties p = new Properties();
+        p.setProperty("resource.loader", "class");
+        p.setProperty("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+        Velocity.init(p);
+    }
+
     @Override
-    public void sendMessage(){
+    public void sendMessage() {
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo("bacaoanuioana@yahoo.com");
@@ -39,87 +50,87 @@ public class EmailServiceImpl implements EmailService {
         mailSender.send(message);
     }
 
-    public void sendMessageToDoctor( Doctor doctor){
+    public void sendMessageToDoctor(Doctor doctor) {
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(doctor.getEmail().getEmail());
         message.setSubject("doctor account");
 
-        Properties p = new Properties();
-        p.setProperty("resource.loader", "class");
-        p.setProperty("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
-        Velocity.init( p );
-
         Template template = Velocity.getTemplate("templates/doctorAccountMail.vm");
 
         VelocityContext velocityContext = new VelocityContext();
-        velocityContext.put("firstName", doctor.getFirstName()!=null?doctor.getFirstName():"-");
-        velocityContext.put("lastName", doctor.getLastName()!=null?doctor.getLastName():"-");
-        velocityContext.put("function", doctor.getFunction()!=null?doctor.getFunction():"-");
-        velocityContext.put("address", doctor.getAddress()!=null? doctor.getAddress().toString():"-");
-        velocityContext.put("email", doctor.getEmail()!=null?doctor.getEmail().getEmail():"-");
-        velocityContext.put("phoneNumber", doctor.getPhoneNumber()!=null?doctor.getPhoneNumber().getPhoneNumber(): "-");
+        velocityContext.put("firstName", doctor.getFirstName() != null ? doctor.getFirstName() : "-");
+        velocityContext.put("lastName", doctor.getLastName() != null ? doctor.getLastName() : "-");
+        velocityContext.put("function", doctor.getFunction() != null ? doctor.getFunction() : "-");
+        velocityContext.put("address", doctor.getAddress() != null ? doctor.getAddress().toString() : "-");
+        velocityContext.put("email", doctor.getEmail() != null ? doctor.getEmail().getEmail() : "-");
+        velocityContext.put("phoneNumber", doctor.getPhoneNumber() != null ? doctor.getPhoneNumber().getPhoneNumber() : "-");
 
-        StringWriter stringWriter = new StringWriter();
-
-        template.merge(velocityContext, stringWriter);
-
-        message.setText(stringWriter.toString());
-
-        mailSender.send(message);
+        sendMessage(message, template, velocityContext);
     }
 
-    public void sendMessageToPatient(Patient patient){
+    public void sendMessageToPatient(Patient patient) {
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(patient.getEmail().getEmail());
         message.setSubject("patient account");
 
-        Properties p = new Properties();
-        p.setProperty("resource.loader", "class");
-        p.setProperty("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
-        Velocity.init( p );
-
         Template template = Velocity.getTemplate("templates/patientAccountMail.vm");
 
         VelocityContext velocityContext = new VelocityContext();
-        velocityContext.put("firstName", patient.getFirstName()!=null?patient.getFirstName():"-");
-        velocityContext.put("lastName", patient.getLastName()!=null?patient.getLastName():"-");
-        velocityContext.put("age", patient.getAge()!=null?patient.getAge():"-");
-        velocityContext.put("address", patient.getAddress()!=null? patient.getAddress().toString():"-");
-        velocityContext.put("email", patient.getEmail()!=null?patient.getEmail().getEmail():"-");
-        velocityContext.put("phoneNumber", patient.getPhoneNumber()!=null?patient.getPhoneNumber().getPhoneNumber(): "-");
+        velocityContext.put("firstName", patient.getFirstName() != null ? patient.getFirstName() : "-");
+        velocityContext.put("lastName", patient.getLastName() != null ? patient.getLastName() : "-");
+        velocityContext.put("age", patient.getAge() != null ? patient.getAge() : "-");
+        velocityContext.put("address", patient.getAddress() != null ? patient.getAddress().toString() : "-");
+        velocityContext.put("email", patient.getEmail() != null ? patient.getEmail().getEmail() : "-");
+        velocityContext.put("phoneNumber", patient.getPhoneNumber() != null ? patient.getPhoneNumber().getPhoneNumber() : "-");
 
-        StringWriter stringWriter = new StringWriter();
-
-        template.merge(velocityContext, stringWriter);
-
-        message.setText(stringWriter.toString());
-
-        mailSender.send(message);
+        sendMessage(message, template, velocityContext);
     }
 
-    public void sendAppointmentMessageToPatient(Patient patient, Doctor doctor, Appointment appointment){
+    public void sendAppointmentMessageToPatient(Patient patient, Doctor doctor, Appointment appointment,
+                                                String appointmentDate, String startTime, String endTime) {
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(patient.getEmail().getEmail());
         message.setSubject("Appointment Info");
 
-        Properties p = new Properties();
-        p.setProperty("resource.loader", "class");
-        p.setProperty("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
-        Velocity.init( p );
-
         Template template = Velocity.getTemplate("templates/patientAppointmentMail.vm");
 
-        VelocityContext velocityContext = new VelocityContext();
-        velocityContext.put("patientName", patient.getFirstName()+" "+patient.getLastName());
-        velocityContext.put("doctorName", patient.getLastName()+" "+doctor.getLastName());
-        velocityContext.put("date", appointment.getStartTime());
-        velocityContext.put("starTime", appointment.getStartTime());
-        velocityContext.put("endTime", appointment.getEndTime());
-        velocityContext.put("cause", appointment.getCause());
+        VelocityContext velocityContext = getContextForAppointment(patient, doctor, appointment,
+                appointmentDate, startTime, endTime);
 
+        sendMessage(message, template, velocityContext);
+    }
+
+    public void sendAppointmentMessageToDoctor(Patient patient, Doctor doctor, Appointment appointment,
+                                               String appointmentDate, String startTime, String endTime) {
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(doctor.getEmail().getEmail());
+        message.setSubject("Appointment Info");
+
+        Template template = Velocity.getTemplate("templates/doctorAppointmentMail.vm");
+
+        VelocityContext velocityContext = getContextForAppointment(patient, doctor, appointment,
+                appointmentDate, startTime, endTime);
+
+        sendMessage(message, template, velocityContext);
+    }
+
+    public VelocityContext getContextForAppointment(Patient patient, Doctor doctor, Appointment appointment,
+                                                    String appointmentDate, String startTime, String endTime) {
+        VelocityContext velocityContext = new VelocityContext();
+        velocityContext.put("patientName", patient.name());
+        velocityContext.put("doctorName", doctor.name());
+        velocityContext.put("date", appointmentDate);
+        velocityContext.put("startTime", startTime);
+        velocityContext.put("endTime", endTime);
+        velocityContext.put("cause", appointment.getCause());
+        return velocityContext;
+    }
+
+    private void sendMessage(SimpleMailMessage message, Template template, VelocityContext velocityContext) {
         StringWriter stringWriter = new StringWriter();
 
         template.merge(velocityContext, stringWriter);

@@ -1,6 +1,7 @@
 package com.hospital.hospital.controller;
 
 import com.hospital.hospital.model.Doctor;
+import com.hospital.hospital.service.EmailServiceImpl;
 import com.hospital.hospital.service.IDoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -18,7 +19,8 @@ public class DoctorController {
 
     @Autowired
     IDoctorService doctorService;
-
+    @Autowired
+    EmailServiceImpl emailService;
 
     @GetMapping("/doctors")
     List<Doctor> getAllDoctors() {
@@ -28,6 +30,7 @@ public class DoctorController {
     @PostMapping("doctor/save")
     void saveDoctor(@Valid @RequestBody Doctor doctor, BindingResult result) {
         doctorService.addDoctor(doctor);
+        emailService.sendMessageToDoctor(doctor);
     }
 
     @GetMapping("/doctors/{id}")

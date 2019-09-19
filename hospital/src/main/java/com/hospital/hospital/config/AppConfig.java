@@ -1,6 +1,7 @@
 package com.hospital.hospital.config;
 
 import com.hospital.hospital.scheduler.ScheduledJob;
+import com.hospital.hospital.utils.DateTimeUtils;
 import org.apache.velocity.app.VelocityEngine;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

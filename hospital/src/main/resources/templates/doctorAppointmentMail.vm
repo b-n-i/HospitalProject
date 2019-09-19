@@ -1,0 +1,10 @@
+Hello ${doctorName}!
+Do not forget about your appointment:
+Patient: ${patientName}
+When: ${date}
+Start Hour: ${startTime}
+End Hour: ${endTime}
+Cause: ${cause}
+
+Remember you can cancel your appointment anytime, excepting one hour before it's start time.
+Have a nice day!

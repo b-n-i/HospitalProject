@@ -5,7 +5,10 @@ import com.hospital.hospital.model.Doctor;
 import com.hospital.hospital.model.Email;
 import com.hospital.hospital.model.Patient;
 import com.hospital.hospital.service.AppointmentService;
+import com.hospital.hospital.service.DoctorService;
 import com.hospital.hospital.service.EmailServiceImpl;
+import com.hospital.hospital.service.PatientService;
+import com.hospital.hospital.utils.DateTimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +26,12 @@ public class AppointmentController {
 
     @Autowired
     EmailServiceImpl emailService;
+
+    @Autowired
+    PatientService patientService;
+
+    @Autowired
+    DoctorService doctorService;
 
 
     @GetMapping("/appointmentSample")
@@ -59,6 +68,16 @@ public class AppointmentController {
     @PostMapping("appointment/save")
     void saveAppointment(@Valid @RequestBody Appointment appointment) {
         appointmentService.addAppointment(appointment);
+
+        String appointmentDate = DateTimeUtils.getStringDateWithoutTime(appointment.getStartTime());
+        String startTime = DateTimeUtils.getStringTimeWithoutDate(appointment.getStartTime());
+        String endTime = DateTimeUtils.getStringTimeWithoutDate(appointment.getEndTime());
+
+//  notify doctor and patient via email
+        Patient patient = patientService.getPatientById(appointment.getPatientId());
+        Doctor doctor = doctorService.getDoctorById(appointment.getDoctorId());
+        emailService.sendAppointmentMessageToPatient(patient, doctor, appointment, appointmentDate, startTime, endTime);
+        emailService.sendAppointmentMessageToDoctor(patient, doctor, appointment, appointmentDate, startTime, endTime);
     }
 
     @GetMapping("/appointment/{id}")
@@ -84,44 +103,51 @@ public class AppointmentController {
     }
 
     @GetMapping(value = "appointment/active/doctor/{id}")
-    public List<Appointment> getAppointmentByDoctorIdFindByStartDateBeforeCurrentDate(@PathVariable Integer id){
+    public List<Appointment> getAppointmentByDoctorIdFindByStartDateBeforeCurrentDate(@PathVariable Integer id) {
         Date currentDate = new Date(System.currentTimeMillis());
         return appointmentService.getAppointmentsDoctorIdBeforeDate(id, currentDate);
     }
 
     @GetMapping(value = "appointment/future")
-    public List<Appointment> getAppointmentInTheFuture(){
+    public List<Appointment> getAppointmentInTheFuture() {
         Date currentDate = new Date(System.currentTimeMillis());
         return appointmentService.getAppointmentAfterDate(currentDate);
     }
 
-    @PatchMapping(value="appointments/cancel/{id}")
-    public Boolean cancelAppointment(@PathVariable Integer id){
+    @PatchMapping(value = "appointments/cancel/{id}")
+    public Boolean cancelAppointment(@PathVariable Integer id) {
         Appointment appointmentToBeCancelled = appointmentService.getAppointmentById(id);
         Boolean response = appointmentService.canBeCancelled(appointmentToBeCancelled);
-        if( response){
+        if (response) {
             appointmentToBeCancelled.setCancelled(true);
             appointmentService.updateAppointment(appointmentToBeCancelled);
         }
         return response;
     }
 
-    @PostMapping(value="test")
-    public void test()
-    {
+    @PostMapping(value = "test")
+    public void test() {
         Doctor doctor = new Doctor();
         Email email = new Email();
         email.setEmail("bacaoanuioana@yahoo.com");
 
         doctor.setEmail(email);
         doctor.setFirstName("Radu");
-        emailService.sendMessageToDoctor(doctor);
+//        emailService.sendMessageToDoctor(doctor);
 
         Email patientEmail = new Email();
         patientEmail.setEmail("b_nicoleta_ioana@yahoo.com");
         Patient patient = new Patient();
         patient.setFirstName("patient");
         patient.setEmail(patientEmail);
-        emailService.sendMessageToPatient(patient);
+
+        Appointment appointment = getAppointmentSample();
+
+        String appointmentDate = DateTimeUtils.getStringDateWithoutTime(appointment.getStartTime());
+        String startTime = DateTimeUtils.getStringTimeWithoutDate(appointment.getStartTime());
+        String endTime = DateTimeUtils.getStringTimeWithoutDate(appointment.getEndTime());
+
+        emailService.sendAppointmentMessageToPatient(patient, doctor, appointment, appointmentDate, startTime, endTime);
+        emailService.sendAppointmentMessageToDoctor(patient, doctor, appointment, appointmentDate, startTime, endTime);
     }
 }
