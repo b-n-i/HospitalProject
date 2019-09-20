@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/doctor")
 public class DoctorController {
 
     @Autowired
@@ -22,23 +23,23 @@ public class DoctorController {
     @Autowired
     EmailServiceImpl emailService;
 
-    @GetMapping("/doctors")
+    @GetMapping("/list")
     List<Doctor> getAllDoctors() {
         return doctorService.getAllDoctors();
     }
 
-    @PostMapping("doctor/save")
+    @PostMapping("/save")
     void saveDoctor(@Valid @RequestBody Doctor doctor, BindingResult result) {
         doctorService.addDoctor(doctor);
         emailService.sendMessageToDoctor(doctor);
     }
 
-    @GetMapping("/doctors/{id}")
+    @GetMapping("/{id}")
     Doctor getDoctorById(@PathVariable Integer id) {
         return doctorService.getDoctorById(id);
     }
 
-    @PatchMapping("doctor/update")
+    @PatchMapping("/update")
     void updateDoctor(@RequestBody String rawJson, BindingResult result) {
         try {
             doctorService.updateDoctor(rawJson);
@@ -47,7 +48,7 @@ public class DoctorController {
         }
     }
 
-    @DeleteMapping(value = "/doctor/delete/{id}")
+    @DeleteMapping(value = "/delete/{id}")
     public void deleteDoctor(@PathVariable Integer id) {
         doctorService.deleteDoctor(id);
     }

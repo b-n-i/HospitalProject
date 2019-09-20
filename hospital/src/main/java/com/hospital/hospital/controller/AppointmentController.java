@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
+@RequestMapping("/appointment")
 public class AppointmentController {
 
     @Autowired
@@ -34,7 +35,7 @@ public class AppointmentController {
     DoctorService doctorService;
 
 
-    @GetMapping("/appointmentSample")
+    @GetMapping("/sample")
     Appointment getAppointmentSample() {
         Appointment appointment = new Appointment();
         appointment.setAppointmentId(1);
@@ -60,12 +61,12 @@ public class AppointmentController {
         return appointment;
     }
 
-    @GetMapping("/appointments")
+    @GetMapping("/list")
     List<Appointment> getAllAppointments() {
         return appointmentService.getAllAppointments();
     }
 
-    @PostMapping("appointment/save")
+    @PostMapping("/save")
     void saveAppointment(@Valid @RequestBody Appointment appointment) {
         appointmentService.addAppointment(appointment);
 
@@ -80,41 +81,41 @@ public class AppointmentController {
         emailService.sendAppointmentMessageToDoctor(patient, doctor, appointment, appointmentDate, startTime, endTime);
     }
 
-    @GetMapping("/appointment/{id}")
+    @GetMapping("/{id}")
     Appointment getAppointmentById(@PathVariable Integer id) {
         return appointmentService.getAppointmentById(id);
     }
 
 
-    @DeleteMapping(value = "/appointment/delete/{id}")
+    @DeleteMapping(value = "/delete/{id}")
     public void deleteAppointment(@PathVariable Integer id) {
         appointmentService.deleteAppointment(id);
     }
 
-    @GetMapping(value = "appointment/doctor/{id}")
+    @GetMapping(value = "/doctor/{id}")
     public List<Appointment> getAppointmentsByDoctorId(@PathVariable Integer id) {
         return appointmentService.getAppointmentsByDoctorId(id);
     }
 
 
-    @GetMapping(value = "appointment/patient/{id}")
+    @GetMapping(value = "/patient/{id}")
     public List<Appointment> getAppointmentsByPatientId(@PathVariable Integer id) {
         return appointmentService.getAppointmentsByPatientId(id);
     }
 
-    @GetMapping(value = "appointment/active/doctor/{id}")
+    @GetMapping(value = "/past/doctor/{id}")
     public List<Appointment> getAppointmentByDoctorIdFindByStartDateBeforeCurrentDate(@PathVariable Integer id) {
         Date currentDate = new Date(System.currentTimeMillis());
         return appointmentService.getAppointmentsDoctorIdBeforeDate(id, currentDate);
     }
 
-    @GetMapping(value = "appointment/future")
+    @GetMapping(value = "/future")
     public List<Appointment> getAppointmentInTheFuture() {
         Date currentDate = new Date(System.currentTimeMillis());
         return appointmentService.getAppointmentAfterDate(currentDate);
     }
 
-    @PatchMapping(value = "appointments/cancel/{id}")
+    @PatchMapping(value = "/cancel/{id}")
     public Boolean cancelAppointment(@PathVariable Integer id) {
         Appointment appointmentToBeCancelled = appointmentService.getAppointmentById(id);
         Boolean response = appointmentService.canBeCancelled(appointmentToBeCancelled);
@@ -125,7 +126,7 @@ public class AppointmentController {
         return response;
     }
 
-    @PostMapping(value = "test")
+    @PostMapping(value = "/test")
     public void test() {
         Doctor doctor = new Doctor();
         Email email = new Email();

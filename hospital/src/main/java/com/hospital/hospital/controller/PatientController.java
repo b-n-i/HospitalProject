@@ -13,6 +13,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 @RestController
+@RequestMapping("/patient")
 public class PatientController {
 
     @Autowired
@@ -21,23 +22,23 @@ public class PatientController {
     EmailServiceImpl emailService;
 
 
-    @GetMapping("/patients")
+    @GetMapping("/list")
     List<Patient> getAllPatients() {
         return patientService.getAllPatients();
     }
 
-    @PostMapping("patient/save")
+    @PostMapping("/save")
     void savePatient(@Valid @RequestBody Patient patient, BindingResult result) {
         patientService.addPatient(patient);
         emailService.sendMessageToPatient(patient);
     }
 
-    @GetMapping("/patients/{id}")
+    @GetMapping("/{id}")
     Patient getPatientById(@PathVariable Integer id) {
         return patientService.getPatientById(id);
     }
 
-    @PatchMapping("patient/update")
+    @PatchMapping("/update")
     void updatePatient(@Valid @RequestBody PatientDTO patientDTO, BindingResult result) {
         Patient oldPatient = patientService.getPatientById(patientDTO.getId());
         try {
@@ -47,7 +48,7 @@ public class PatientController {
         }
     }
 
-    @DeleteMapping(value = "/patient/delete/{id}")
+    @DeleteMapping(value = "/delete/{id}")
     public void deletePatient(@PathVariable Integer id) {
         patientService.deletePatient(id);
     }
