@@ -5,6 +5,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 
+//Class used in validators to access beans by extracting them from application context
 @Service
 public class BeanUtil implements ApplicationContextAware {
 
